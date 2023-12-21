@@ -1,8 +1,8 @@
 ```
 TITLE: GIB Games Universal Style Guide
 AUTHOR: Toast <Sam@Gib.games>
-VERSION: 1.1
-UPDATE_DATE: 8/9/2023
+VERSION: 1.1.9
+UPDATE_DATE: 12/20/2023
 ```
 
 ![Image](https://i.imgur.com/fr2Q5FY.png)
@@ -86,12 +86,12 @@ The directory structure style of a project should be considered law. Asset namin
 
 In this style, we will be using a structure that relies more on filtering and search abilities of the Project Window for those working with assets to find assets of a specific type instead of another common structure that groups asset types with folders.
 
+	_Developer
 	AssetResources
 	Documentation
-	GIB Games
-	KaijuU
-		_Levels
-        Animations
+	[Project name]
+	
+        	Animations
 		Audio
 			Dialogue
 			Music
@@ -104,8 +104,11 @@ In this style, we will be using a structure that relies more on filtering and se
 				Lighting
                 PostProcessing
 		Graphics
-		Objects
+  		Prefabs
 		Props
+  		Scenes
+    		Scriptable Objects
+      			Definitions
 		Scripts
 			Common
 			Editor
@@ -118,20 +121,10 @@ In this style, we will be using a structure that relies more on filtering and se
 			Cursors
 			Fonts
 			Sprites
-	Mirror
-	PlayFab
 	Plugins
-	Prefabs
 	Resources
-	Scenes
-	Scripts
-		Core
-		Testing
 	ScriptTemplates
 	StreamingAssets
-	XR
-	XRI
-</pre>
 
 
 The reasons for this structure are listed in the following sub-sections.
@@ -394,7 +387,7 @@ namespace GIB
 		// Properties =============
 	  
 		public string PublicProperty {get; set;}
-		public DateTime PrivateProperty {get; private set;}
+		public DateTime privateProperty {get; private set;}
 		
 		// Methods ================
 		
