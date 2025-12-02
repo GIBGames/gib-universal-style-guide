@@ -1,18 +1,17 @@
 ```
 TITLE: GIB Games Universal Style Guide
 AUTHOR: Toast <Sam@Gib.games>
-VERSION: 1.1.9
-UPDATE_DATE: 12/20/2023
+VERSION: 1.2
+UPDATE_DATE: 12/2/2025
 ```
 
 ![Image](https://i.imgur.com/fr2Q5FY.png)
 
-> ##### *Arguments over style are pointless. There should be a style guide, and you should follow it.*
-> [_Rebecca Murphey_](https://rmurphey.com)
+> *Arguments over style are pointless. There should be a style guide, and you should follow it.*
+> \- [_Rebecca Murphey_](https://rmurphey.com)
 
 <a name="toc"></a>
 ## Table of Contents
-
 > 1. [Introduction](#introduction)
 > 1. [Project Structure](#structure)
 > 1. [Scripts](#scripts)
@@ -26,7 +25,6 @@ UPDATE_DATE: 12/20/2023
 ### Sections
 
 > 1.1 [Style](#style)
-> 
 > 1.2 [Important Terminology](#importantterminology)
 
 <a name="style"></a>
@@ -48,15 +46,23 @@ When working within a team or discussing within a community, it is far easier to
 If you are helping someone who's work conforms to a different but consistent and sane style guide, you should be able to adapt to it. If they do not conform to any style guide, please direct them here.
 
 <a name="importantterminology"></a>
-### 1.2 Important Terminology
+### 1.2 Automate wherever possible
+
+Several rules are inherently brittle if enforced by memory rather than tooling. Where possible, write tiny supporting tools (Editor scripts, commit hooks, etc.) so enforcement is procedural rather than punitive.
+
+<a name="importantterminology"></a>
+### 1.3 Important Terminology
 
 <a name="terms-prefab"></a>
 #### Prefabs
 Unity uses the term Prefab for a system that allows you to create, configure, and store a GameObject complete with all its components, property values, and child GameObjects as a reusable Asset.
 
 <a name="terms-level-map"></a>
-#### Levels/Maps/Scene
-Levels refer to what some people call maps or what Unity calls Scenes. A level contains a collection of objects.
+#### Levels vs. Maps vs. Scene
+
+- **Scene** refers to a unity [Scene](https://docs.unity3d.com/6000.2/Documentation/ScriptReference/SceneManagement.Scene.html).
+- **Level** refers to a segment of gameplay which may consist of multiple Scenes, separated by a loading screen or tangible border.
+- **Map** refers to a collection of scenes that share space and are loaded together. For example, `Warehouse_Geo.scene` and `Warehouse_Lighting.scene` loaded together could be referred to as the Warehouse "map".
 
 <a name="terms-serializable"></a>
 #### Serializable
@@ -66,17 +72,13 @@ Variables that are Serializable are shown in the Inspector window in Unity. For 
 #### Cases
 There are a few different ways you can name things. Here are some common casing types:
 
-> ##### PascalCase
-> Capitalize every word and remove all spaces, e.g. `DesertEagle`, `StyleGuide`, `ASeriesOfWords`.
+> **PascalCase**: Capitalize every word and remove all spaces, e.g. `DesertEagle`, `StyleGuide`, `ASeriesOfWords`.
 > 
-> ##### camelCase
-> The first letter is always lowercase but every following word starts with uppercase, e.g. `desertEagle`, `styleGuide`, `aSeriesOfWords`.
+> **camelCase** The first letter is always lowercase but every following word starts with uppercase, e.g. `desertEagle`, `styleGuide`, `aSeriesOfWords`.
 > 
->  ##### lowercase
-> All letters are lowercase, e.g. `deserteagle`, 
+> **lowercase** All letters are lowercase, e.g. `deserteagle`, 
 >
-> ##### Snake_case
-> Words can arbitrarily start upper or lowercase but words are separated by an underscore, e.g. `desert_Eagle`, `Style_Guide`, `a_Series_of_Words`.
+> **Snake_case** Words can arbitrarily start upper or lowercase but words are separated by an underscore, e.g. `desert_Eagle`, `Style_Guide`, `a_Series_of_Words`.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -87,28 +89,36 @@ The directory structure style of a project should be considered law. Asset namin
 In this style, we will be using a structure that relies more on filtering and search abilities of the Project Window for those working with assets to find assets of a specific type instead of another common structure that groups asset types with folders.
 
 	_Developer
+	_Levels
 	AssetResources
+	BakeryLightmaps
 	Documentation
+	Editor
 	[Project name]
-	
-        	Animations
+        Animations
 		Audio
 			Dialogue
 			Music
 			SFX
 			Incidental
 		Characters
-		FX
-			Particles
+		Graphics
+			FX
+				Particles
+			Materials
+			Meshes
 			Rendering
 				Lighting
                 PostProcessing
-		Graphics
+			Textures
+			UI
+				Cursors
+				Fonts
+				Sprites
   		Prefabs
-		Props
-  		Scenes
-    		Scriptable Objects
-      			Definitions
+			Props
+    	ScriptableObjects
+      		Definitions
 		Scripts
 			Common
 			Editor
@@ -117,38 +127,24 @@ In this style, we will be using a structure that relies more on filtering and se
 				Muto
 			Testing
 			Tools
-		UI
-			Cursors
-			Fonts
-			Sprites
 	Plugins
 	Resources
 	ScriptTemplates
 	StreamingAssets
-
 
 The reasons for this structure are listed in the following sub-sections.
 
 ### Sections
 
 > 2.1 [Folder Names](#structure-folder-names)
-> 
 > 2.2 [Top-Level Folders](#structure-top-level)
-> 
 > 2.3 [Developer Folders](#structure-developers)
-> 
 > 2.4 [Levels](#levels)
-> 
 > 2.5 [Define Ownership](#structure-ownership)
-> 
 > 2.6 [`Assets` and `AssetTypes`](#structure-assettypes)
-> 
 > 2.7 [Large Sets](#structure-large-sets)
-> 
 > 2.8 [Material Library](#structure-material-library)
-> 
 > 2.9 [Scene Structure](#scene-structure)
-
 
 <a name="2.1"></a>
 <a name="structure-folder-names"><a>
@@ -174,6 +170,8 @@ Using other characters outside `a-z`, `A-Z`, and `0-9` such as `@`, `-`, `_`, `,
 <a name="structure-no-empty-folders"></a>
 #### No Empty Folders
 There simply shouldn't be any empty folders. They clutter the content browser.
+
+Where possible, empty folders are deleted automatically via a pre-commit hook.
 
 If you find that the content browser has an empty folder you can't delete, you should perform the following:
 1. Be sure you're using source control.
@@ -255,16 +253,6 @@ This versioning is detected by the build system using [Git tags](#gittags).
 #### Creating a folder named `Assets` is redundant.
 All assets are assets.
 
-<a name="2.6.2"></a>
-#### Creating a folder named `Meshes`, `Textures`, or `Materials` is redundant.
-All asset names are named with their asset type in mind. These folders offer only redundant information and the use of these folders can easily be replaced with the robust and easy to use filtering system the Content Browser provides.
-
-Want to view only static mesh in `Environment/Rocks/`? Simply turn on the Static Mesh filter. If all assets are named correctly, they will also be sorted in alphabetical order regardless of prefixes. Want to view both static meshes and skeletal meshes? Simply turn on both filters. this eliminates the need to potentially have to `Control-Click` select two folders in the Content Browser's tree view.
-
-> This also extends the full path name of an asset for very little benefit. The `SM_` prefix for a static mesh is only three characters, whereas `Meshes/` is seven characters.
-
-Not doing this also prevents the inevitability of someone putting a static mesh or a texture in a `Materials` folder.
-
 <a name="2.7"></a>
 <a name="structure-large-sets"></a>
 ### 2.7 Very Large Asset Sets Get Their Own Folder Layout
@@ -301,13 +289,13 @@ Debug
 Environment
 Management
 UI
-Behavior
+Behaviors
 Objects
-_Dynamic
+Dynamic
 </pre>
 
- - All empty objects should be located at 0,0,0 with default rotation and scale.
- - When you’re instantiating an object in runtime, make sure to put it in _Dynamic – do not pollute the root of your hierarchy or you will find it difficult to navigate through it.
+- All empty objects should be located at 0,0,0 with default rotation and scale.
+- When you’re instantiating an object in runtime, make sure to put it in _Dynamic – do not pollute the root of your hierarchy or you will find it difficult to navigate through it.
 
 **[⬆ Back to Top](#table-of-contents)**
 
@@ -319,92 +307,226 @@ This section will focus on C# classes and their internals. When possible, style 
 
 ### Sections
 > 3.1 [Class Organization](#classorganization)
-> 
 > 3.2 [Compiling](#compiling)
-> 
 > 3.3 [Variables](#variables)
-> 
 > 3.4 [Functions](#functions)
 
+<a name="3.1"></a>
 <a name="classorganization"></a>
 ### 3.1 Class Organization
-Source files should contain only one public type, although multiple internal classes are allowed.
+Source files must contain only one public type. Internal helper classes may appear in the same file if they exist solely to support the public type.
 
-Source files should be given the name of the public class in the file.
+The file name must match the public class name.
 
-Organize namespaces with a clearly defined structure,
+Organize classes for readability, predictability, and responsibility. Readers should understand the class’s purpose, lifecycle, and public API at a glance.
 
-Class members should be alphabetized, and grouped into sections:
-* Constant Fields
-* Static Fields
-* Fields
-* Constructors
-* Properties
-* Events / Delegates
-* Unity Methods (Awake, OnEnable, Start, FixedUpdate)
-* Public Methods
-* Private Methods
-* Enums
+<a name="3.1.1"></a>
+<a name="classorganization-ordering"></a>
+#### 3.1.1 Ordering by Responsibility
 
-Within each of these groups order by access:
-* public
-* internal
-* protected
-* private
+Class members must be grouped by responsibility, not alphabetically. Each section should appear in the following order:
+
+- Constants
+- Static Fields
+- Instance Fields
+- Properties
+- Events & Delegates
+- Unity Event Methods (lifecycle methods)
+- Public Methods
+- Internal / Protected Methods
+- Private Methods
+- Nested Types (Enums, structs, private classes)
+
+##### Unity Event Methods Come First in the Behavior Section
+
+Unity’s execution order defines the flow of runtime behavior. To make that flow easy to follow:
+
+Within a class, all Unity event methods (Awake, OnEnable, Start, Update, FixedUpdate, etc.) must appear before all other non-property methods.
+
+Recommended ordering:
+
+```csharp
+#region Unity Methods
+private void Awake() { }
+private void OnEnable() { }
+private void Start() { }
+private void Update() { }
+private void FixedUpdate() { }
+private void OnDisable() { }
+private void OnDestroy() { }
+#endregion
+```
+<a name="3.1.2"></a>
+<a name="classorganization-regions"></a>
+#### 3.1.2 Regions
+
+Use `#region` blocks to visually mark responsibility groups. Regions should follow the responsibility order above:
+
+```csharp
+- #region Constants
+- #region Static Fields
+- #region Fields
+- #region Properties
+...etc
+```
+
+Avoid nesting regions within regions.
+
+<a name="3.1.3"></a>
+<a name="classorganization-async"></a>
+#### 3.1.3 async/await Usage
+
+Async/await introduces concurrency risks in Unity. Async methods must end with the suffix `Async`.
+
+##### Allowed Usage
+
+- Async patterns are allowed for I/O tasks, web requests, file system operations, and tools/editor utilities.
+- Use async to avoid blocking the main thread when tasks are not Unity-dependent.
+
+##### Forbidden Usage
+
+- Never `await` inside `Update`, `FixedUpdate`, or other Unity frame-driven loops.
+- Do not use async to perform time-delayed gameplay actions. Use Coroutines instead.
+
+##### Thread Safety
+
+- Unity API calls must not be made off the main thread.
+- After an awaited task, assume execution may resume on a worker thread unless explicitly marshaled.
+
+##### example
+
+```csharp
+public async Task LoadPlayerDataAsync()
+{
+    var json = await File.ReadAllTextAsync(savePath);
+    playerData = JsonUtility.FromJson<PlayerData>(json);
+}
+```
+
+<a name="3.1.4"></a>
+<a name="classorganization-so"></a>
+#### 3.1.4 ScriptableObject Usage Style
+
+ScriptableObjects (SOs) must be used as data containers, configuration objects, or reference libraries, **not** as stateful gameplay components.
+
+##### Guidelines
+
+- SOs should be immutable during play unless explicitly designed as runtime data containers.
+- Runtime-modified SOs must be created with `ScriptableObject.CreateInstance<T>()` and never modify the asset file.
+- Do not place gameplay logic inside SOs. Keep logic in MonoBehaviours and use SOs for:
+-- Stats
+-- Item definitions
+-- Config profiles
+-- Asset collections
+-- Event channels (if your architecture uses them)
+
+##### Naming
+
+ScriptableObject classes should end with a noun indicating data, e.g.:
+
+- `WeaponDefinition`
+- `PlayerConfig`
+- `DialogueSet`
+
+##### Editor Creation
+
+Every SO should have a `[CreateAssetMenu]` attribute with a clear path.
+
+<a name="3.1.5"></a>
+<a name="classorganization-editor"></a>
+#### 3.1.5 Editor Scripts
+
+Editor scripts must be isolated from runtime code to prevent accidental inclusion in builds.
+
+##### Folder Structure
+
+- All editor scripts must exist somewhere under a folder named `Editor/`.
+- Never reference editor classes from runtime assemblies.
+
+##### Conventions
+
+- Namespace Editor scripts under `.Editor` or `.EditorTools`, e.g.:
+-- GIB.Project.Editor
+-- GIB.Tools.Editor
+- Editor window class names should end with `Window`.
+- Custom inspectors should end with `Editor`.
+- Property drawers should end with `Drawer`.
+
+Examples:
+
+- `InventoryDatabaseEditor`
+- `ProjectileDefinitionDrawer`
+- `BuildPipelineWindow`
+
+##### Safety Requirements
+
+- Always wrap editor-only APIs with `#if UNITY_EDITOR` when unavoidable.
+- Editor scripts must fail gracefully if required assets are missing.
+
+<a name="3.1.6"></a>
+<a name="classorganization-example"></a>
+### 3.1.6 Example Script
 
 ```csharp
 /**
- * Copyright 2023 GIB Games Incorporated
+ * Copyright 2025 GIB Games
  * ScriptName.cs
  * Created by: AuthorName
- * Created on: Creation Date
+ * Created on: CreationDate
  */
+
 using UnityEngine;
 
-namespace GIB
+namespace GIB.Project
 {
-	/// <summary>  
-	/// Brief summary of what the class does
-	/// </summary>
+    /// <summary>
+    /// Brief summary of the class.
+    /// </summary>
     public class ScriptName : MonoBehaviour
     {
-		// Fields ================
-		public const string CONST_VARIABLE = "Constant Variable";
-      
-		[Tooltip("Public variables set in the Inspector, should have a Tooltip")]
-		public static string StaticVariable;
-    
-		/// <summary>  
-		/// They should also have a summary
-		/// </summary>
-		public float PublicField;
-	  
-		[SerializeField]
-		private int serializedPrivateField;
-	  
-		private float _privateField;
-	  
-		// Properties =============
-	  
-		public string PublicProperty {get; set;}
-		public DateTime privateProperty {get; private set;}
-		
-		// Methods ================
-		
-	#region Unity Methods
-		public Awake()
-		{
-			// ...
-		}      
-	#endregion
-	  
-	#region Public Methods
-	  
-		public AddObjectToBank()
-		{
-			// ...
-		}
-	#endregion
+        #region Constants
+        public const string CONST_VALUE = "Constant";
+        #endregion
+
+        #region Static Fields
+        public static int GlobalCount;
+        #endregion
+
+        #region Fields
+        [SerializeField] private float speed;
+        private int _internalCounter;
+        #endregion
+
+        #region Properties
+        public float Speed => speed;
+        #endregion
+
+        #region Events
+        public event Action OnReady;
+        #endregion
+
+        #region Unity Methods
+        private void Awake() { }
+        private void Start() { }
+        private void Update() { }
+        #endregion
+
+        #region Public Methods
+        public void Move() { }
+        public async Task LoadDataAsync() { }
+        #endregion
+
+        #region Internal Methods
+        internal void Initialize() { }
+        #endregion
+
+        #region Private Methods
+        private void CalculateMovement() { }
+        #endregion
+
+        #region Nested Types
+        private enum State { Idle, Moving }
+        #endregion
     }
 }
 ```
@@ -433,7 +555,7 @@ public void Fire()
 #### Foldout Groups
 If a class has only a small number of variables, Foldout Groups are not required.
 
-If a class has a moderate amount of variables (5-10), all [Serializable](#serializable) variables should have a non-default Foldout Group assigned. A common category is `Config`. Use the Foldout Group Attribute available with [Odin Inspector](https://odininspector.com/).
+If a class has a moderate amount of variables (5-10), all [Serializable](#serializable) variables should have a non-default Foldout Group assigned. A common category is `Config`. Use the Foldout Group Attribute available with [EventsPro](https://assetstore.unity.com/packages/tools/utilities/eventspro-improved-events-and-ui-for-unity-269511).
 
 ```csharp
 [FoldoutGroup("Interactable")]
@@ -475,10 +597,11 @@ Example: `Console.In.Read(myChar, 0, 1);`
 * Do not use a space after the parenthesis and function arguments.
 * Do not use spaces between a function name and parenthesis.
 * Do not use spaces inside brackets.
+
 <a name="3.1"></a>
 <a name="compiling"></a>
 ### 3.2 Compiling
-All scripts should compile with zero warnings and zero errors. You should fix script warnings and errors immediately as they can quickly cascade into very scary unexpected behavior.
+All scripts should compile with zero major warnings and zero errors. You should fix script warnings and errors immediately as they can quickly cascade into very scary unexpected behavior.
 
 Do *not* submit broken scripts to source control. If you must store them on source control, shelve them instead.
 
@@ -577,6 +700,8 @@ int iCounter;
 string strName;
 ```
 
+The only exception to this are 
+
 #### Variables accessible in the Editor
 
 ##### Tooltips 
@@ -596,13 +721,9 @@ If an editable variable is used in a Construction Script, it should have a reaso
 
 ##### Booleans
 
-###### Boolean Prefix
-All booleans should be named in PascalCase but prefixed with a verb.
+All booleans should be named in PascalCase but prefixed with a verb. All booleans should be named as descriptive adjectives when possible if representing general information.
 
 Example: Use `isDead` and `hasItem`, **not** `Dead` and `Item`.
-
-###### Boolean Names
-All booleans should be named as descriptive adjectives when possible if representing general information.
 
 ###### Boolean Complex States
 Do not use booleans to represent complex and/or dependent states. This makes state adding and removing complex and no longer easily readable. Use an enumeration instead.
@@ -726,13 +847,12 @@ Bad examples:
 **[⬆ Back to Top](#table-of-contents)**
 <a name="anc"></a>
 <a name="4"></a>
-
 ## 4. Asset Naming Conventions
 Naming conventions should be treated as law. A project that conforms to a naming convention is able to have its assets managed, searched, parsed, and maintained with incredible ease.
 
-Most things are prefixed with the prefix generally being an acronym of the asset type followed by an underscore.
+Most things are prefixed with the prefix generally being an acronym of the asset type followed by an underscore. We intentionally adopt UE-style prefixes for uniformity across disciplines
 
-**Assets use [PascalCase](#cases)**
+**Assets use [PascalCase](#cases)**.
 
 <a name="base-asset-name"></a>
 <a name="4.1"></a>
@@ -752,10 +872,33 @@ For unique but generic variations of assets, `Variant` is a two digit number sta
 
 Depending on how your asset variants are made, you can chain together variant names. For example, if you are creating flooring assets for an Arch Viz project you should use the base name `Flooring` with chained variants such as `Flooring_Marble_01`, `Flooring_Maple_01`, `Flooring_Tile_Squares_01`.
 
-<a name="1.1-examples"></a>
-#### Examples
+#### 4.2.1 Reserved BaseAssetNames
 
-##### Character
+These names should not be used as character names, prop names, or general base names. They should be reserved for system-level, shared, or highly conventionalized asset groups.
+
+##### Shared Assets
+
+- `Common`: Any asset intended to be reused across multiple contexts (common characters, shared anim sets, shared textures).
+- `Shared`: Similar to Common, but typically for materials, textures, UI elements, or utility assets
+- `Global`: Assets that truly affect the entire project (global shaders, lighting LUTs, Post-Processing volumes, etc).
+- `Utility`: Noise textures, helper materials, tool scripts, FX helpers.
+- `Debug`: Materials, textures, meshes, or prefabs used for debugging only.
+
+##### System-level naming
+
+Used for core systems or functional modules to avoid conflicts with in-game nouns.
+
+- `Core`: Core system assets, core managers, global scriptable objects.
+- `System`: Internal systems such as AI brains, state machines, save/load tools.
+- `Config`: ScriptableObject configuration sets.
+- `Settings`: Profile definitions, input maps, tuning tables.
+- `Runtime`: Runtime-generated SOs, temporary assets created programmatically.
+- `Test`: Developer-only prefabs, test materials, experiments.
+
+<a name="4.1-examples"></a>
+##### Examples
+
+**Character**
 
 | Asset Type               | Asset Name   |
 | ------------------------ | ------------ |
@@ -765,7 +908,7 @@ Depending on how your asset variants are made, you can chain together variant na
 | Texture (Normal)         | T_Bob_N      |
 | Texture (Evil Diffuse)   | T_Bob_Evil_D |
 
-##### Prop
+**Prop**
 
 | Asset Type               | Asset Name   |
 | ------------------------ | ------------ |
@@ -783,25 +926,15 @@ When naming an asset use these tables to determine the prefix and suffix to use 
 #### Sections
 
 > 4.2.1 [Most Common](#anc-common)
-> 
 > 4.2.2 [Animations](#anc-animations)
-> 
 > 4.2.3 [Artificial Intelligence](#anc-ai)
-> 
 > 4.2.4 [Prefabs](#anc-prefab)
-> 
 > 4.2.5 [Materials](#anc-materials)
-> 
 > 4.2.6 [Textures](#anc-textures)
-> 
 > 4.2.7 [Miscellaneous](#anc-misc)
-> 
 > 4.2.8 [Physics](#anc-physics)
-> 
 > 4.2.9 [Audio](#anc-audio)
-> 
 > 4.2.10 [User Interface](#anc-ui)
-> 
 > 4.2.11 [Effects](#anc-effects)
 
 <a name="anc-common"></a>
@@ -903,6 +1036,7 @@ All meshes in 3ds Max are lowercase to differentiate them from their FBX export.
 | Texture (Bump)          | T_         | _B         |                                  |
 | Texture (Emissive)      | T_         | _E         |                                  |
 | Texture (Mask)          | T_         | _M         |                                  |
+| Texture (Metallic)          | T_         | _MET         |                                  |
 | Texture (Specular)      | T_         | _S         |                                  |
 | Texture (Packed)        | T_         | _*         | See notes below about [packing](#anc-textures-packing). |
 | Texture Cube            | TC_       |            |                                  |
@@ -958,7 +1092,7 @@ Packing 4 channels of data into a texture (RGBA) is not recommended except for a
 #### 4.2.11 Effects
 | Asset Type      | Prefix | Suffix | Notes |
 | --------------- | ------ | ------ | ----- |
-| Particle System | PS_    |        |       |
+| Particle System | PART_    |        |       |
 **[⬆ Back to Top](#table-of-contents)**
 
 <a name="repository"></a>
@@ -971,11 +1105,8 @@ This section describes best practices for managing the Git Repository.
 ### Sections
 
 > 5.1 [Branches](#gitbranches)
-> 
 > 5.2 [Naming Conventions](#gitnaming)
-> 
 > 5.3 [Descriptions](#gitdesc)
-> 
 > 5.4 [Tags](#gittags)
 
 <a name="gitbranches"></a>
@@ -988,11 +1119,9 @@ Git branches are broadly classified into two categories:
 
 Regular Git branches are those branches that are permanently available in your repositories. These can be further classified into three categories namely Dev branch, master branch, and QA branch or test branch.
 
-* The **Dev** branch is the development branch that is used by developers to develop any new feature. The developers can not directly write code in the master branch as the master branch is the production branch. When the code in the dev branch undergoes reviews and testing then only it is merged into the main branch.
-
-* The **QA** branch or the test ranch is used for QA testing and automation testing before merging any code to production.
-
-* The **Main** branch is the default branch in the Git repository. The master branch is the life of the production branch which is deployed to production. The Master branch should be stable every time and before any merging, any code from the dev branch to the master branch must undergo rigorous testing and verification.
+- The **Dev** branch is the development branch that is used by developers to develop any new feature. The developers can not directly write code in the master branch as the master branch is the production branch. When the code in the dev branch undergoes reviews and testing then only it is merged into the main branch.
+- The **QA** branch or the test ranch is used for QA testing and automation testing before merging any code to production.
+- The **Main** branch is the default branch in the Git repository. The master branch is the life of the production branch which is deployed to production. The Master branch should be stable every time and before any merging, any code from the dev branch to the master branch must undergo rigorous testing and verification.
 
 #### Temporary Git branches
 
@@ -1000,12 +1129,12 @@ Temporary Git branches are the branches that are created and deleted as per requ
 
 They can be classified into the following branches
 
-* Bug Fix
-* Hot Fix
-* Feature Branches
-* Release Branches
-* Experimental Branches
-* WIP branches
+- Bug Fix
+- Hot Fix
+- Feature Branches
+- Release Branches
+- Experimental Branches
+- WIP branches
 
 <a name="gitnaming"></a>
 
@@ -1030,11 +1159,11 @@ The branch name should start with a group word that signifies the purpose of the
 
 A commit message should start with a category of change. You can pretty much use the following 4 categories for everything: feat, fix, refactor, and chore.
 
-* **build**: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
-* **feature** or **task**: changed or added content or features
-* **fix**: fixing a bug
-* **code** or **refactor**: changing code for peformance or convenience purpose (e.g. readibility)
-* **misc** or **chore**: everything else (writing documentation, formatting, adding tests, cleaning useless code etc.)
+- **build**: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
+- **feature** or **task**: changed or added content or features
+- **fix**: fixing a bug
+- **code** or **refactor**: changing code for peformance or convenience purpose (e.g. readibility)
+- **misc** or **chore**: everything else (writing documentation, formatting, adding tests, cleaning useless code etc.)
 
 After the category, there should be a ":" announcing the commit description.
 
@@ -1064,11 +1193,8 @@ This section describes best practices for creating and importing assets usable i
 ### Sections
 
 > 6.1 [Unity Asset Import Settings](#unityimport)
-> 
 > 6.2 [3ds Max](#3dsmax)
-> 
 > 6.3 [Textures](#textures)
-> 
 > 6.4 [Audio](#audio)
 
 <a name="unityimport"></a>
