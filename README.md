@@ -24,8 +24,8 @@ UPDATE_DATE: 12/2/2025
 
 ### Sections
 
-> 1.1 [Style](#style)
-> 1.2 [Important Terminology](#importantterminology)
+- 1.1 [Style](#style)
+- 1.2 [Important Terminology](#importantterminology)
 
 <a name="style"></a>
 ### 1.1 Style
@@ -136,15 +136,15 @@ The reasons for this structure are listed in the following sub-sections.
 
 ### Sections
 
-> 2.1 [Folder Names](#structure-folder-names)
-> 2.2 [Top-Level Folders](#structure-top-level)
-> 2.3 [Developer Folders](#structure-developers)
-> 2.4 [Levels](#levels)
-> 2.5 [Define Ownership](#structure-ownership)
-> 2.6 [`Assets` and `AssetTypes`](#structure-assettypes)
-> 2.7 [Large Sets](#structure-large-sets)
-> 2.8 [Material Library](#structure-material-library)
-> 2.9 [Scene Structure](#scene-structure)
+- 2.1 [Folder Names](#structure-folder-names)
+- 2.2 [Top-Level Folders](#structure-top-level)
+- 2.3 [Developer Folders](#structure-developers)
+- 2.4 [Levels](#levels)
+- 2.5 [Define Ownership](#structure-ownership)
+- 2.6 [`Assets` and `AssetTypes`](#structure-assettypes)
+- 2.7 [Large Sets](#structure-large-sets)
+- 2.8 [Material Library](#structure-material-library)
+- 2.9 [Scene Structure](#scene-structure)
 
 <a name="2.1"></a>
 <a name="structure-folder-names"><a>
@@ -306,10 +306,10 @@ Dynamic
 This section will focus on C# classes and their internals. When possible, style rules conform to Microsoft's C# standard.
 
 ### Sections
-> 3.1 [Class Organization](#classorganization)
-> 3.2 [Compiling](#compiling)
-> 3.3 [Variables](#variables)
-> 3.4 [Functions](#functions)
+- 3.1 [Class Organization](#classorganization)
+- 3.2 [Compiling](#compiling)
+- 3.3 [Variables](#variables)
+- 3.4 [Functions](#functions)
 
 <a name="3.1"></a>
 <a name="classorganization"></a>
@@ -1104,10 +1104,10 @@ This section describes best practices for managing the Git Repository.
 <a name="toc"></a>
 ### Sections
 
-> 5.1 [Branches](#gitbranches)
-> 5.2 [Naming Conventions](#gitnaming)
-> 5.3 [Descriptions](#gitdesc)
-> 5.4 [Tags](#gittags)
+- 5.1 [Branches](#gitbranches)
+- 5.2 [Naming Conventions](#gitnaming)
+- 5.3 [Descriptions](#gitdesc)
+- 5.4 [Tags](#gittags)
 
 <a name="gitbranches"></a>
 
@@ -1192,10 +1192,10 @@ This section describes best practices for creating and importing assets usable i
 <a name="toc"></a>
 ### Sections
 
-> 6.1 [Unity Asset Import Settings](#unityimport)
-> 6.2 [3ds Max](#3dsmax)
-> 6.3 [Textures](#textures)
-> 6.4 [Audio](#audio)
+- 6.1 [Unity Asset Import Settings](#unityimport)
+- 6.2 [3ds Max](#3dsmax)
+- 6.3 [Textures](#textures)
+- 6.4 [Audio](#audio)
 
 <a name="unityimport"></a>
 
